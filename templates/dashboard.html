@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IcoPoint - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        const subtipos = {
+            "Instalación Residencial": ["Interior -80m","Interior +80m","Exterior -80m","Exterior +80m","Poste -80m","Poste +80m","Poste +220m","TV","Reutilizada Interior/Exterior","Reutilizada Poste"],
+            "Instalación B2B": ["Acceso+Router Nueva","Acceso+Router Reutilizada","Acceso GGCC Nueva","Acceso GGCC Reutilizada","Acceso+Router Centrex Nueva","Acceso+Router Centrex Reutilizada","Poste Nueva","Poste Reutilizada","Postventa","Portabilidad Express","Replanteo","Instalación TV","Avería"],
+            "Avería": ["Interior/Exterior","Poste","Fin de semana","Fin de semana Poste"],
+            "Postventa": ["Postventa"]
+        };
+
+        function actualizarSubtipos() {
+            const tipo = document.getElementById("tipo").value;
+            const container = document.getElementById("subtiposContainer");
+            container.innerHTML = "";
+            if(subtipos[tipo]){
+                subtipos[tipo].forEach(s => {
+                    const div = document.createElement("div");
+                    div.className = "subtipo-item";
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.name = "subtipo";
+                    checkbox.value = s;
+
+                    const label = document.createElement("label");
+                    label.innerHTML = s;
+
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        window.onload = actualizarSubtipos;
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>IcoPoint Dashboard</h1>
+    <h2>Bienvenido, {{ current_user.username }}</h2>
+    <p>Puntos acumulados: {{ total_puntos }} / 225 ({{ progreso }}%)</p>
+
+    <h3>Agregar Orden</h3>
+    <form method="POST">
+        <input type="text" name="numero_instalacion" placeholder="Número de instalación" required>
+        <input type="date" name="fecha" required>
+        <select name="tipo" id="tipo" onchange="actualizarSubtipos()" required>
+            <option value="Instalación Residencial">Instalación Residencial</option>
+            <option value="Instalación B2B">Instalación B2B</option>
+            <option value="Avería">Avería</option>
+            <option value="Postventa">Postventa</option>
+        </select>
+        <div id="subtiposContainer" class="subtipos-container"></div>
+        <button type="submit">Agregar</button>
+    </form>
+
+    <h3>Resumen del periodo</h3>
+    <table>
+        <tr>
+            <th>Número</th>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Subtipo</th>
+            <th>Puntos</th>
+            <th>Acciones</th>
+        </tr>
+        {% for o in ordenes %}
+        <tr style="background-color: {% if 'B2B' in o.tipo %}#d1ecf1{% elif 'Residencial' in o.tipo %}#d4edda{% else %}#fff{% endif %}">
+            <td>{{ o.numero_instalacion }}</td>
+            <td>{{ o.fecha }}</td>
+            <td>{{ o.tipo }}</td>
+            <td>{{ o.subtipos }}</td>
+            <td>{{ o.puntos }}</td>
+            <td>
+                {% if o.user_id == current_user.id or current_user.admin %}
+                <a href="{{ url_for('modificar', orden_id=o.id) }}" class="btn">Modificar</a>
+                <a href="{{ url_for('eliminar', orden_id=o.id) }}" class="btn">Eliminar</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="{{ url_for('historial') }}" class="btn">Ver historial mensual</a>
+    <a href="{{ url_for('ranking') }}" class="btn">Ranking Top 10</a>
+    <a href="{{ url_for('logout') }}" class="btn">Cerrar sesión</a>
+
+    <footer>
+        <p>© 2026 Fernando Calvente Salas</p>
+    </footer>
+</div>
+</body>
+</html>

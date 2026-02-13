@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IcoPoint - Modificar Orden</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        const subtipos = {
+            "Instalación Residencial": ["Interior -80m","Interior +80m","Exterior -80m","Exterior +80m","Poste -80m","Poste +80m","Poste +220m","TV","Reutilizada Interior/Exterior","Reutilizada Poste"],
+            "Instalación B2B": ["Acceso+Router Nueva","Acceso+Router Reutilizada","Acceso GGCC Nueva","Acceso GGCC Reutilizada","Acceso+Router Centrex Nueva","Acceso+Router Centrex Reutilizada","Poste Nueva","Poste Reutilizada","Postventa","Portabilidad Express","Replanteo","Instalación TV","Avería"],
+            "Avería": ["Interior/Exterior","Poste","Fin de semana","Fin de semana Poste"],
+            "Postventa": ["Postventa"]
+        };
+
+        function actualizarSubtipos() {
+            const tipo = document.getElementById("tipo").value;
+            const container = document.getElementById("subtiposContainer");
+            container.innerHTML = "";
+            if(subtipos[tipo]){
+                subtipos[tipo].forEach(s => {
+                    const div = document.createElement("div");
+                    div.className = "subtipo-item";
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.name = "subtipo";
+                    checkbox.value = s;
+                    // marcar el que estaba seleccionado previamente
+                    if("{{ orden.subtipos }}" == s) checkbox.checked = true;
+
+                    const label = document.createElement("label");
+                    label.innerHTML = s;
+
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        window.onload = actualizarSubtipos;
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Modificar Orden</h1>
+    <form method="POST">
+        <input type="text" name="numero_instalacion" placeholder="Número de instalación" value="{{ orden.numero_instalacion }}" required>
+        <input type="date" name="fecha" value="{{ orden.fecha }}" required>
+        <select name="tipo" id="tipo" onchange="actualizarSubtipos()" required>
+            <option value="Instalación Residencial" {% if orden.tipo=='Instalación Residencial' %}selected{% endif %}>Instalación Residencial</option>
+            <option value="Instalación B2B" {% if orden.tipo=='Instalación B2B' %}selected{% endif %}>Instalación B2B</option>
+            <option value="Avería" {% if orden.tipo=='Avería' %}selected{% endif %}>Avería</option>
+            <option value="Postventa" {% if orden.tipo=='Postventa' %}selected{% endif %}>Postventa</option>
+        </select>
+        <div id="subtiposContainer" class="subtipos-container"></div>
+        <button type="submit">Actualizar</button>
+    </form>
+
+    <a href="{{ url_for('dashboard') }}" class="btn-volver">Volver al Dashboard</a>
+</div>
+</body>
+</html>

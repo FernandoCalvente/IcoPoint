@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IcoPoint - Historial Mensual</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Historial Mensual</h1>
+    <table>
+        <tr>
+            <th>Número</th>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Subtipo</th>
+            <th>Puntos</th>
+        </tr>
+        {% for o in ordenes %}
+        <tr style="background-color: {% if 'B2B' in o.tipo %}#d1ecf1{% elif 'Residencial' in o.tipo %}#d4edda{% else %}#fff{% endif %}">
+            <td>{{ o.numero_instalacion }}</td>
+            <td>{{ o.fecha }}</td>
+            <td>{{ o.tipo }}</td>
+            <td>{{ o.subtipos }}</td>
+            <td>{{ o.puntos }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('dashboard') }}" class="btn-volver">Volver al Dashboard</a>
+
+    <footer>
+        <p>© 2026 Fernando Calvente Salas</p>
+    </footer>
+</div>
+</body>
+</html>
