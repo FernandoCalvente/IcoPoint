@@ -38,6 +38,11 @@ class Orden(db.Model):
     puntos = db.Column(db.Float)
 
 # ---------- LOGIN ----------
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# ---------- RUTAS ----------
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
@@ -56,17 +61,6 @@ def login():
 
     return render_template('login.html', error=error)
 
-# ---------- RUTAS ----------
-@app.route('/', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter_by(username=username, password=password).first()
-        if user:
-            login_user(user)
-            return redirect(url_for('dashboard'))
-    return render_template('login.html')
 
 
 @app.route('/logout')
