@@ -4,7 +4,9 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
 
 
 import matplotlib.pyplot as plt
@@ -36,9 +38,23 @@ class Orden(db.Model):
     puntos = db.Column(db.Float)
 
 # ---------- LOGIN ----------
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    error = None
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        user = User.query.filter_by(username=username).first()
+
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for('dashboard'))
+        else:
+            error = "Usuario o contraseña incorrectos"
+
+    return render_template('login.html', error=error)
 
 # ---------- RUTAS ----------
 @app.route('/', methods=['GET', 'POST'])
