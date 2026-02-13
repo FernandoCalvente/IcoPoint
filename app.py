@@ -244,7 +244,4 @@ if __name__ == '__main__':
 
     # Solo para entorno LOCAL
     app.run(debug=True)
-<<<<<<< HEAD
 
-=======
->>>>>>> b21a6ac (Preparado para deploy en Render)
