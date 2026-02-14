@@ -40,7 +40,7 @@ def load_user(user_id):
 def login():
     error = None
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip().lower()
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
@@ -63,7 +63,7 @@ def logout():
 @app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip().lower()
         password = request.form['password']
         if User.query.filter_by(username=username).first():
             return "Usuario ya existe"
