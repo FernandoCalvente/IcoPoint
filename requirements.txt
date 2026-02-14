@@ -9,6 +9,7 @@ Flask-Login==0.6.3
 Flask-SQLAlchemy==3.0.5
 fonttools==4.61.1
 greenlet==3.3.1
+gunicorn==25.1.0
 itsdangerous==2.2.0
 Jinja2==3.1.6
 kiwisolver==1.4.9
@@ -24,4 +25,3 @@ six==1.17.0
 SQLAlchemy==2.0.46
 typing_extensions==4.15.0
 Werkzeug==3.1.5
-gunicorn
