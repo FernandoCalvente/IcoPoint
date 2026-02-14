@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, date
+from datetime import datetime, date, time
 import io
 import base64
 
@@ -240,6 +240,9 @@ def ranking():
 
 
 # ---------- HISTORIAL ---------
+# ---------- HISTORIAL CORREGIDO ---------
+from datetime import datetime, time
+
 @login_required
 @app.route("/historial")
 def historial():
@@ -249,7 +252,7 @@ def historial():
 
     hoy = date.today()
     if not mes or not año:
-        # Si no vienen, usamos periodo actual
+        # Periodo actual
         if hoy.day > 20:
             mes = hoy.month
             año = hoy.year
@@ -257,22 +260,27 @@ def historial():
             mes = hoy.month - 1 if hoy.month > 1 else 12
             año = hoy.year if hoy.month > 1 else hoy.year - 1
 
+    # Fechas de inicio y fin del periodo
     inicio = date(año, mes, 21)
     if mes == 12:
         fin = date(año + 1, 1, 20)
     else:
         fin = date(año, mes + 1, 20)
 
+    # Convertir a datetime para evitar problemas de comparación
+    inicio_dt = datetime.combine(inicio, time.min)
+    fin_dt = datetime.combine(fin, time.max)
+
+    # Consultar órdenes
     if current_user.admin:
-        ordenes = Orden.query.filter(
-            Orden.fecha >= inicio,
-            Orden.fecha <= fin
-        ).order_by(Orden.fecha.desc()).all()
+        # Admin: todas las órdenes con usuario
+        ordenes = Orden.query.join(User).order_by(Orden.fecha.desc()).all()
     else:
+        # Usuario normal: solo sus órdenes
         ordenes = Orden.query.filter(
             Orden.user_id == current_user.id,
-            Orden.fecha >= inicio,
-            Orden.fecha <= fin
+            Orden.fecha >= inicio_dt,
+            Orden.fecha <= fin_dt
         ).order_by(Orden.fecha.desc()).all()
 
     # Mes anterior y siguiente para navegación

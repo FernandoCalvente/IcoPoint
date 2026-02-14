@@ -39,16 +39,16 @@
                 <th>Subtipos</th>
                 <th>Puntos</th>
             </tr>
-            {% for item in historial %}
+            {% for orden in ordenes %}
             <tr>
                 {% if current_user.admin %}
-                <td>{{ item.usuario }}</td>
+                <td>{{ orden.user.username }}</td>
                 {% endif %}
-                <td>{{ item.orden.fecha.strftime('%d/%m/%Y') }}</td>
-                <td>{{ item.orden.numero_instalacion }}</td>
-                <td>{{ item.orden.tipo }}</td>
-                <td>{{ item.orden.subtipos }}</td>
-                <td>{{ item.orden.puntos }}</td>
+                <td>{{ orden.fecha.strftime('%d/%m/%Y') }}</td>
+                <td>{{ orden.numero_instalacion }}</td>
+                <td>{{ orden.tipo }}</td>
+                <td>{{ orden.subtipos }}</td>
+                <td>{{ orden.puntos }}</td>
             </tr>
             {% endfor %}
         </table>
