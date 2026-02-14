@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#007BFF">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Usuarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: center;
+        }
+        .table th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .btn-modificar { background-color: #28a745; }
+        .btn-eliminar { background-color: #dc3545; }
+        .btn-modificar:hover { background-color: #218838; }
+        .btn-eliminar:hover { background-color: #c82333; }
+        .btn-crear { background-color: #007BFF; margin-bottom: 15px; display: inline-block; }
+        .btn-crear:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard - Gestión de Usuarios</h1>
+
+        <a href="{{ url_for('crear_usuario') }}" class="btn btn-crear">Crear Nuevo Usuario</a>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Administrador</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in usuarios %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{% if user.admin %}Sí{% else %}No{% endif %}</td>
+                        <td>
+                            <a href="{{ url_for('modificar_usuario', user_id=user.id) }}" class="btn btn-modificar">Modificar</a>
+                            {% if not user.admin %}
+                                <a href="{{ url_for('eliminar_usuario', user_id=user.id) }}" class="btn btn-eliminar">Eliminar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('ranking') }}" class="btn btn-crear">Ver ranking</a>
+        <a href="{{ url_for('historial') }}" class="btn-volver">Ver Historial</a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-crear">Volver al Dashboard</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-crear">Cerrar sesión</a>
+
+    </div>
+<div class="creditos" style="text-align:center; margin-top:40px; font-size:0.9em; color:#888;">
+    © 2026 Fernando Calvente Salas
+</div>
+<!-- Esto va justo antes de cerrar </body> -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/static/service-worker.js')
+    .then(() => console.log('Service Worker registrado'))
+    .catch(err => console.log('Error registrando Service Worker:', err));
+}
+</script>
+
+
+</body>
+</html>

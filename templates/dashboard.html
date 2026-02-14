@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#007BFF">
+
     <title>IcoPoint - Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script>
@@ -94,5 +97,14 @@
         <p>© 2026 Fernando Calvente Salas</p>
     </footer>
 </div>
+<!-- Esto va justo antes de cerrar </body> -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/static/service-worker.js')
+    .then(() => console.log('Service Worker registrado'))
+    .catch(err => console.log('Error registrando Service Worker:', err));
+}
+</script>
+
 </body>
 </html>

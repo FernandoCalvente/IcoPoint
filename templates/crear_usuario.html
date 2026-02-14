@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Crear Nuevo Usuario</h1>
+        <form method="POST">
+            <label>Nombre de usuario:</label>
+            <input type="text" name="username" required>
+
+            <label>Contraseña:</label>
+            <input type="password" name="password" required>
+
+            <label>Administrador:</label>
+            <input type="checkbox" name="admin">
+
+            <button type="submit">Crear Usuario</button>
+        </form>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-volver">Volver al Admin Dashboard</a>
+    </div>
+</body>
+</html>

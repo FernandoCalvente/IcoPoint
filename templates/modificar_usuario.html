@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Usuario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Modificar Usuario: {{ user.username }}</h1>
+        <form method="POST">
+            <label>Nombre de usuario:</label>
+            <input type="text" name="username" value="{{ user.username }}" required>
+
+            <label>Nueva contraseña (dejar en blanco para no cambiar):</label>
+            <input type="password" name="password">
+
+            <label>Administrador:</label>
+            <input type="checkbox" name="admin" {% if user.admin %}checked{% endif %}>
+
+            <button type="submit">Guardar Cambios</button>
+        </form>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-volver">Volver al Admin Dashboard</a>
+    </div>
+</body>
+</html>

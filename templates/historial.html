@@ -1,36 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>IcoPoint - Historial Mensual</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Órdenes</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin:0; padding:0;}
+        .container { max-width: 900px; margin: 50px auto; padding: 20px;}
+        h1 { text-align:center; margin-bottom:20px;}
+        table { width: 100%; border-collapse: collapse; margin-bottom:20px;}
+        th, td { border:1px solid #ddd; padding:8px; text-align:center;}
+        th { background-color:#007BFF; color:white;}
+        .btn-volver, .btn-nav { display:inline-block; margin:5px; padding:8px 15px; background-color:#007BFF; color:white; text-decoration:none; border-radius:5px; font-weight:bold; }
+        .btn-volver:hover, .btn-nav:hover { background-color:#0056b3;}
+        .creditos { text-align:center; font-size:0.9em; color:#888; margin-top:40px;}
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1>Historial Mensual</h1>
-    <table>
-        <tr>
-            <th>Número</th>
-            <th>Fecha</th>
-            <th>Tipo</th>
-            <th>Subtipo</th>
-            <th>Puntos</th>
-        </tr>
-        {% for o in ordenes %}
-        <tr style="background-color: {% if 'B2B' in o.tipo %}#d1ecf1{% elif 'Residencial' in o.tipo %}#d4edda{% else %}#fff{% endif %}">
-            <td>{{ o.numero_instalacion }}</td>
-            <td>{{ o.fecha }}</td>
-            <td>{{ o.tipo }}</td>
-            <td>{{ o.subtipos }}</td>
-            <td>{{ o.puntos }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="container">
+        <h1>Historial de Órdenes</h1>
 
-    <a href="{{ url_for('dashboard') }}" class="btn-volver">Volver al Dashboard</a>
+        <div>
+            <a href="{{ url_for('historial', mes=mes_anterior, anio=año_anterior) }}" class="btn-nav">&lt; Mes anterior</a>
+            <a href="{{ url_for('historial', mes=mes_siguiente, anio=año_siguiente) }}" class="btn-nav">Mes siguiente &gt;</a>
+        </div>
 
-    <footer>
-        <p>© 2026 Fernando Calvente Salas</p>
-    </footer>
-</div>
+        <p style="text-align:center;">Mostrando del {{ inicio.strftime('%d/%m/%Y') }} al {{ fin.strftime('%d/%m/%Y') }}</p>
+
+        <table>
+            <tr>
+                {% if current_user.admin %}
+                <th>Usuario</th>
+                {% endif %}
+                <th>Fecha</th>
+                <th>Nº Instalación</th>
+                <th>Tipo</th>
+                <th>Subtipos</th>
+                <th>Puntos</th>
+            </tr>
+            {% for item in historial %}
+            <tr>
+                {% if current_user.admin %}
+                <td>{{ item.usuario }}</td>
+                {% endif %}
+                <td>{{ item.orden.fecha.strftime('%d/%m/%Y') }}</td>
+                <td>{{ item.orden.numero_instalacion }}</td>
+                <td>{{ item.orden.tipo }}</td>
+                <td>{{ item.orden.subtipos }}</td>
+                <td>{{ item.orden.puntos }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <a href="{{ url_for('dashboard') }}" class="btn-volver">Volver al Dashboard</a>
+        <a href="{{ url_for('logout') }}" class="btn-volver">Cerrar sesión</a>
+
+        <div class="creditos">
+            © 2026 Fernando Calvente Salas
+        </div>
+    </div>
 </body>
 </html>
